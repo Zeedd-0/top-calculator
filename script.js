@@ -84,6 +84,8 @@ function display(text, overwrite) {
     };
 }
 
+// <<<<<<<<<<<<<<<<<<<<<<< ADD A LIMIT OF DIGITS PLUS CHARACTERS
+
 function operation(target) { // <<<<<< GOTTA MAKE POSSIBLE TO CHANGE POSITIVE TO NEGATIVE
                              // <<<<<< AND VICE VERSA WITH OPERATION SIGN ONLY FOR THE SECOND NUMBER
                              // <<<<<< MAKE FLEXIBLE TO ADD +/- OPERATOR, THIS ONE WORKS FOR BOTH NUMBERS
