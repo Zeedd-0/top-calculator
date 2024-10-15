@@ -84,11 +84,14 @@ function display(text, overwrite) {
     };
 }
 
-// <<<<<<<<<<<<<<<<<<<<<<< ADD A LIMIT OF DIGITS PLUS CHARACTERS
+// <<<<<<<<<<<<<<<<<<<<<<< o ADD A LIMIT OF DIGITS PLUS CHARACTERS
+// <<<<<<<<<<<<<<<<<<<<<<< o GOTTA MAKE OPERATION DISPLAY SHOW OPERATION
+//                         AND RESULT DISPLAY TO SHOW ONLY RESULT
 
-function operation(target) { // <<<<<< GOTTA MAKE POSSIBLE TO CHANGE POSITIVE TO NEGATIVE
-                             // <<<<<< AND VICE VERSA WITH OPERATION SIGN ONLY FOR THE SECOND NUMBER
-                             // <<<<<< MAKE FLEXIBLE TO ADD +/- OPERATOR, THIS ONE WORKS FOR BOTH NUMBERS
+
+function operation(target) { // <<<<<< o GOTTA MAKE POSSIBLE TO CHANGE POSITIVE TO NEGATIVE
+                             //        AND VICE VERSA WITH OPERATION SIGN ONLY FOR THE SECOND NUMBER
+                             //        *MAKE FLEXIBLE TO ADD +/- OPERATOR, THIS ONE WORKS FOR BOTH NUMBERS
     if (target.id !== 'equals') {
         if (NUMBER.selOperation) {
             if (NUMBER.second) {
