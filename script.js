@@ -16,8 +16,8 @@ function divide(a, b) {
 }
 
 // ----------------------------------
-function operate(fNum, sNum, operation) {
-    return OPERATOR[operation](fNum, sNum).toFixed(3) * 1;
+function operate(fNum, sNum, operator) {
+    return OPERATOR[operator](fNum, sNum).toFixed(3) * 1;
 }
 
 // ==================================
@@ -50,28 +50,13 @@ BTN_NUMBER.forEach(button => {
 
 BTN_OPERATION.forEach(button => {
     button.addEventListener('click', e => {
-        let  target = e.target;
-        if (target.id !== 'equals') {
-            if (NUMBER.result !== '' && NUMBER.first === '') {
-                NUMBER.first = NUMBER.result;
-                NUMBER.result = '';
-            };
-            NUMBER.selOperation = target;
-            display(target.innerText, 0);
-        };
+        operation(e.target);
     });
 })
 
 BTN_END.forEach(button => {
     button.addEventListener('click', e => {
-        switch (e.target.id) {
-            case 'clear':
-                clear();
-                break;
-            case 'equals':
-                equals();
-                break;
-        };
+        clearEquals(e.target);
     });
 })
 
@@ -96,6 +81,39 @@ function display(text, overwrite) {
         RESULT_DISPLAY.innerText = text;    
     } else {
         RESULT_DISPLAY.innerText += text;
+    };
+}
+
+function operation(target) { // <<<<<< GOTTA MAKE POSSIBLE TO CHANGE POSITIVE TO NEGATIVE
+                             // <<<<<< AND VICE VERSA WITH OPERATION SIGN ONLY FOR THE SECOND NUMBER
+                             // <<<<<< MAKE FLEXIBLE TO ADD +/- OPERATOR, THIS ONE WORKS FOR BOTH NUMBERS
+    if (target.id !== 'equals') {
+        if (NUMBER.selOperation) {
+            if (NUMBER.second) {
+                equals();
+            } else {
+                displayBackspace();
+            };
+        };
+        if (NUMBER.result !== '' && NUMBER.first === '') {
+            NUMBER.first = NUMBER.result;
+            NUMBER.result = '';
+        };
+        NUMBER.selOperation = target;
+        display(target.innerText, 0);
+    }      
+};
+
+function displayBackspace() {
+    let text = RESULT_DISPLAY.innerText;
+    RESULT_DISPLAY.innerText = text.slice(0, text.length - 1);    
+}
+
+function clearEquals(target) {
+    if (target.id === 'clear') {
+        clear();
+    } else if (target.id === 'equals') {
+        equals();
     };
 }
 
