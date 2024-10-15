@@ -60,7 +60,7 @@ body {
     color: rgb(201, 201, 201);
     font-size: 3rem;
     align-items: center;
-    flex: 1;
+    flex: 1.2;
 }
 
 #keypad {
