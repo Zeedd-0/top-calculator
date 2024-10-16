@@ -34,11 +34,34 @@ const OPERATOR = {
     'divide': divide,
 };
 
-const NUMBER = {
+const PLUSMINUS = {
+    add: '+',
+    subtract: '-',
+}
+
+
+const INDEX = {i: 0,};
+const CURRENTVALUE = {
+    first: 'first',
+    second: 'second',
+}
+
+
+const N1 = [
+]
+
+const RESULT ={n: '',}
+const N = {
+    current: 'first',
     first: '',
     second: '',
     result: '',
     selOperation: '',
+}
+
+function OpPair(number) {
+    this.n = number;
+    this.op = '';
 }
 
 // ==================================
@@ -50,7 +73,11 @@ BTN_NUMBER.forEach(button => {
 
 BTN_OPERATION.forEach(button => {
     button.addEventListener('click', e => {
-        operation(e.target);
+        if (e.target.id === 'equals') {
+            equals();
+        } else {
+            operation(e.target);
+        };
     });
 })
 
@@ -64,16 +91,21 @@ BTN_END.forEach(button => {
 
 function makeNum(target) {
     let overwrite = 0;
-    if (NUMBER.selOperation) {
-        NUMBER.second += target.innerText;
-    } else {
-        if (NUMBER.result) {
-            overwrite = 1;
-            NUMBER.result = '';
-        };
-        NUMBER.first += target.innerText;
+
+    if (N.result !== '' || N.result === 0) {
+        // if (target.id === 'dot') {
+        //     display(0, 0);
+        // };
+        overwrite = 1;
+        N.result = '';
     };
+    if (target.id === 'dot' && N[N.current] === '') {
+        display(0, 0);
+    };
+
+    N[N.current] += target.innerText;
     display(target.innerText, overwrite);
+
 }
 
 function display(text, overwrite) {
@@ -87,26 +119,35 @@ function display(text, overwrite) {
 // <<<<<<<<<<<<<<<<<<<<<<< o ADD A LIMIT OF DIGITS PLUS CHARACTERS
 // <<<<<<<<<<<<<<<<<<<<<<< o GOTTA MAKE OPERATION DISPLAY SHOW OPERATION
 //                         AND RESULT DISPLAY TO SHOW ONLY RESULT
+// <<<<<<<<<<<<<<<<<<<<<<< o try a solution of display being three item array to make easier to change values, dot etc
 
 
-function operation(target) { // <<<<<< o GOTTA MAKE POSSIBLE TO CHANGE POSITIVE TO NEGATIVE
-                             //        AND VICE VERSA WITH OPERATION SIGN ONLY FOR THE SECOND NUMBER
-                             //        *MAKE FLEXIBLE TO ADD +/- OPERATOR, THIS ONE WORKS FOR BOTH NUMBERS
-    if (target.id !== 'equals') {
-        if (NUMBER.selOperation) {
-            if (NUMBER.second) {
-                equals();
+
+function operation(target) {
+    if (N.selOperation === '') {
+        if (N.first === '') {
+            if (N.result === '') {
+                N.first = '0';
+                display(0, 0);
             } else {
-                displayBackspace();
+                N.first = N.result;
+                N.result = '';
             };
         };
-        if (NUMBER.result !== '' && NUMBER.first === '') {
-            NUMBER.first = NUMBER.result;
-            NUMBER.result = '';
-        };
-        NUMBER.selOperation = target;
+        N.current = CURRENTVALUE.second;
+        N.selOperation = target;
         display(target.innerText, 0);
-    }      
+    } else {
+        if (N.second === '') {
+            N.current = CURRENTVALUE.second;
+            N.selOperation = target;
+            displayBackspace();
+            display(target.innerText, 0);
+        } else {
+            equals();
+            operation(target);
+        };
+    };
 };
 
 function displayBackspace() {
@@ -123,20 +164,35 @@ function clearEquals(target) {
 }
 
 function equals() {
-    if (NUMBER.selOperation) {
-        let result = operate(NUMBER.first, NUMBER.second, NUMBER.selOperation.id);
-        NUMBER.first = '';
-        NUMBER.second = '';
-        NUMBER.result = result;
-        NUMBER.selOperation = '';
-        display(result, 1);
+    // if operation not selected do nothing
+    if (N.selOperation) {
+
+        // if second number is '' return first number
+        let result = (() => {
+            if (N.second) {
+                if (N.first === '.') N.first = 0;
+                if (N.second === '.') N.second = 0;
+                return operate(N.first, N.second, N.selOperation.id);
+            } else {
+                return N.first;
+            };
+        })();
+        
+        N.result = result;
+        reset();
+        display(result * 1, 1);
     };
 }
 
 function clear() {
-    NUMBER.first = '';
-    NUMBER.second = '';
-    NUMBER.result = '';
-    NUMBER.selOperation = '';
+    N.result = '';
+    reset();
     display('', 1);
+}
+
+function reset() {
+    N.current = CURRENTVALUE.first;
+    N.first = '';
+    N.second = '';
+    N.selOperation = '';
 }
