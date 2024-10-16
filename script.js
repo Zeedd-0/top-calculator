@@ -76,20 +76,18 @@ function makeNum(target) {
     if (RESULT.n !== '' || RESULT.n === 0) {
         RESULT.n = '';
     };
-    if (target.id === 'dot') dotHandle();
+    if (target.id === 'dot') {
+        if (N[SLOT.i].n.includes('.')) {
+            return; // do nothing
+        } else {
+            if (N[SLOT.i].n === '') {
+                N[SLOT.i].n += '0';
+            };
+        };
+    };
 
     N[SLOT.i].n += target.innerText;
     display()
-}
-
-function dotHandle() {
-    if (N[SLOT.i].n.includes('.')) {
-        return; // do nothing
-    } else {
-        if (N[SLOT.i].n === '') {
-            N[SLOT.i].n += '0';
-        };
-    };
 }
 
 function operation(target) {
