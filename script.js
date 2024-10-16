@@ -34,29 +34,13 @@ const OPERATOR = {
     'divide': divide,
 };
 
-const PLUSMINUS = {
-    add: '+',
-    subtract: '-',
-}
+const SLOT = {i: 0,};
 
+const N = [];
 
-const INDEX = {i: 0,};
-const CURRENTVALUE = {
-    first: 'first',
-    second: 'second',
-}
-
-
-const N1 = [
-]
-
-const RESULT ={n: '',}
-const N = {
-    current: 'first',
-    first: '',
-    second: '',
-    result: '',
-    selOperation: '',
+const RESULT ={
+    n: '', // operation result
+    cap: 2 + (-1), // numbers allowed before calculate automatically; (- 1) cause works as array index
 }
 
 function OpPair(number) {
@@ -73,11 +57,7 @@ BTN_NUMBER.forEach(button => {
 
 BTN_OPERATION.forEach(button => {
     button.addEventListener('click', e => {
-        if (e.target.id === 'equals') {
-            equals();
-        } else {
-            operation(e.target);
-        };
+        if (e.target.id in OPERATOR) operation(e.target);
     });
 })
 
@@ -90,69 +70,63 @@ BTN_END.forEach(button => {
 // ----------------------------------
 
 function makeNum(target) {
-    let overwrite = 0;
-
-    if (N.result !== '' || N.result === 0) {
-        // if (target.id === 'dot') {
-        //     display(0, 0);
-        // };
-        overwrite = 1;
-        N.result = '';
+    if (! N[SLOT.i]) {
+        N.push(new OpPair(''));
     };
-    if (target.id === 'dot' && N[N.current] === '') {
-        display(0, 0);
+    if (RESULT.n !== '' || RESULT.n === 0) {
+        RESULT.n = '';
     };
+    if (target.id === 'dot') dotHandle();
 
-    N[N.current] += target.innerText;
-    display(target.innerText, overwrite);
-
+    N[SLOT.i].n += target.innerText;
+    display()
 }
 
-function display(text, overwrite) {
-    if (overwrite) {
-        RESULT_DISPLAY.innerText = text;    
+function dotHandle() {
+    if (N[SLOT.i].n.includes('.')) {
+        return; // do nothing
     } else {
-        RESULT_DISPLAY.innerText += text;
+        if (N[SLOT.i].n === '') {
+            N[SLOT.i].n += '0';
+        };
     };
 }
-
-// <<<<<<<<<<<<<<<<<<<<<<< o ADD A LIMIT OF DIGITS PLUS CHARACTERS
-// <<<<<<<<<<<<<<<<<<<<<<< o GOTTA MAKE OPERATION DISPLAY SHOW OPERATION
-//                         AND RESULT DISPLAY TO SHOW ONLY RESULT
-// <<<<<<<<<<<<<<<<<<<<<<< o try a solution of display being three item array to make easier to change values, dot etc
-
-
 
 function operation(target) {
-    if (N.selOperation === '') {
-        if (N.first === '') {
-            if (N.result === '') {
-                N.first = '0';
-                display(0, 0);
+    if (! N[SLOT.i]) {
+        if (RESULT.n === '' && N[SLOT.i -1 ].n) {
+            N[SLOT.i - 1].op = target;
+        } else {
+            N.push(new OpPair(''));
+            if (RESULT.n) {
+                N[SLOT.i].n = RESULT.n;
+                RESULT.n = '';
             } else {
-                N.first = N.result;
-                N.result = '';
+                N[SLOT.i].n = '0';
             };
         };
-        N.current = CURRENTVALUE.second;
-        N.selOperation = target;
-        display(target.innerText, 0);
+    };
+
+    if (SLOT.i + 1 > RESULT.cap) {
+        equals();
+        operation(target);
     } else {
-        if (N.second === '') {
-            N.current = CURRENTVALUE.second;
-            N.selOperation = target;
-            displayBackspace();
-            display(target.innerText, 0);
-        } else {
-            equals();
-            operation(target);
-        };
+        N[SLOT.i].op = target;
+        SLOT.i++;
+        display();
     };
 };
 
-function displayBackspace() {
-    let text = RESULT_DISPLAY.innerText;
-    RESULT_DISPLAY.innerText = text.slice(0, text.length - 1);    
+function equals() {
+    RESULT.n = (() => {
+        if (N[SLOT.i]) {
+            return operate(N[SLOT.i - 1].n, N[SLOT.i].n, N[SLOT.i - 1].op.id).toString();
+        } else {
+            return RESULT.n = N[SLOT.i - 1].n;
+        };
+    })();
+    display(RESULT.n, 1);
+    reset();
 }
 
 function clearEquals(target) {
@@ -163,36 +137,34 @@ function clearEquals(target) {
     };
 }
 
-function equals() {
-    // if operation not selected do nothing
-    if (N.selOperation) {
-
-        // if second number is '' return first number
-        let result = (() => {
-            if (N.second) {
-                if (N.first === '.') N.first = 0;
-                if (N.second === '.') N.second = 0;
-                return operate(N.first, N.second, N.selOperation.id);
-            } else {
-                return N.first;
-            };
-        })();
-        
-        N.result = result;
-        reset();
-        display(result * 1, 1);
-    };
-}
-
 function clear() {
-    N.result = '';
+    RESULT.n = '';
     reset();
     display('', 1);
 }
 
 function reset() {
-    N.current = CURRENTVALUE.first;
-    N.first = '';
-    N.second = '';
-    N.selOperation = '';
+    SLOT.i = 0;
+    N.splice(0);
 }
+
+function display(text = '', result = 0) {
+    if (result) {
+        RESULT_DISPLAY.innerText = text
+    } else {
+        RESULT_DISPLAY.innerText = N
+        .reduce((string, addStr, i) => {
+            return string.concat(
+                Object.values(addStr)
+                .reduce((prev, curr) => {
+                    return prev.concat(
+                        (typeof curr === 'string') ? curr : curr.innerText);
+                    }, '')
+                )
+            }, '')
+    };
+};
+
+// <<<<<<<<<<<<<<<<<<<<<<< o ADD A LIMIT OF DIGITS PLUS CHARACTERS
+// <<<<<<<<<<<<<<<<<<<<<<< o GOTTA MAKE OPERATION DISPLAY SHOW OPERATION
+//                         AND RESULT DISPLAY TO SHOW ONLY RESULT
