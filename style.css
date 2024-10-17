@@ -21,7 +21,10 @@ body {
 
 /* ------------------------------- */
 #main {
-    border: 1px solid black;
+    width: 100vw;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
 }
 
 #calculator {
@@ -29,6 +32,7 @@ body {
     height: 500px;
     width: 281px;
     margin: auto;
+    border-radius: 10px;
     justify-content: space-between;
     flex-wrap: nowrap;
 }
@@ -38,6 +42,8 @@ body {
 }
 
 #display {
+    background-color: black;
+    border-radius: 10px 10px 0 0 ;
     gap: 10px;
     flex: 1;
 }
@@ -48,7 +54,7 @@ body {
 }
 
 #operation-display {
-    border: 1px solid green;
+    border: 1px solid rgb(22, 22, 22);
     color: rgb(153, 153, 153);
     font-size: 1.5rem;
     align-items: flex-end;
@@ -56,7 +62,7 @@ body {
 }
 
 #result-display {
-    border: 1px solid red;
+    border: 1px solid rgb(51, 51, 51);
     color: rgb(201, 201, 201);
     font-size: 3rem;
     align-items: center;
@@ -64,7 +70,6 @@ body {
 }
 
 #keypad {
-    border: 1px solid white;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
