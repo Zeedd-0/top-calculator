@@ -11,19 +11,17 @@ description:
 ...
 
 skills:
-. 
-
-
-<!-- . pseudo selectors
 . flexbox
 . . justify-content
 . . align-items
 . . flex
 . . margin
 . functions
-. dom manipulation
+. dom elements selection
 . event listener
 . arrow function
-. while
-. for loop
-. for each -->
+.. arrow function self calling
+. objects
+.. objects reassign from inside a function
+. constructor
+. .reduce()
